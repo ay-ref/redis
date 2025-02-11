@@ -2,12 +2,43 @@ version: "3.8"
 
 services:
   redis:
-    image: redis:latest
+    container_name: redis
+    image: redis:7.4
+    command: ["redis-server", "/usr/local/etc/redis/redis.conf"]
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+      - ./config-files:/usr/local/etc/redis:rw
     restart: always
+
+  redisinsight:
+    container_name: redisinsight
+    image: redislabs/redisinsight:1.11.1
+    restart: unless-stopped
+    volumes:
+      - redisinsight_data:/db
+    ports:
+      - 8001:8001
+
+  # graph:
+  #   image: redislabs/redisgraph
+  #   ports:
+  #     - 6479:6379
+  #   restart: always
+
+  # search:
+  #   image: redislabs/redisearch
+  #   ports:
+  #     - 6579:6379
+  #   restart: always
+
+  # timeseries:
+  #   image: redislabs/redistimeseries
+  #   ports:
+  #     - 6679:6379
+  #   restart: always
 
 volumes:
   redis_data:
+  redisinsight_data:
